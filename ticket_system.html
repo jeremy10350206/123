@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket Reservation System</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .event { margin: 20px; }
+        .alert { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Ticket Reservation System</h1>
+    <div id="alerts" class="alert"></div>
+    <div id="events">
+        <div class="event" data-id="1">
+            <h2>Concert</h2>
+            <button onclick="purchaseTicket(1)">Reserve Ticket</button>
+        </div>
+    </div>
+    <script>
+        async function purchaseTicket(eventId) {
+            const captcha = prompt("Please enter the captcha:");
+            const response = await fetch('/api/purchase.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ event_id: eventId, captcha })
+            });
+            const result = await response.json();
+            if (result.status === 'error') {
+                document.getElementById('alerts').innerText = "System detected unusual behavior. Contact the administrator.";
+            }
+            alert(result.message);
+        }
+    </script>
+</body>
+</html>
